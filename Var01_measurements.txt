@@ -1,0 +1,13 @@
+﻿M1		Rp1		0.795		7.2			III
+M1		Rp2		0.537		5.1			III
+M2		Rp1		0.405		6.3			III
+M2		Rp4		-1.047		8.5			III
+M2		Rp5		1.782		2.6			III
+Rp1		Rp2		-0.214		4.2			III
+Rp1		Rp3		0.686		2.4			III
+Rp1		Rp4		-1.413		5.1			III
+Rp1		Rp5		1.315		6.8			III
+Rp2		Rp3		0.906		6.9			III
+Rp2		Rp4		-1.223		3.1			III
+Rp3		Rp4		-2.127		8.0			III
+Rp3		Rp5		0.680		6.9			III

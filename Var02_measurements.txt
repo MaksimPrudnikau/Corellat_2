@@ -1,0 +1,15 @@
+﻿Rp1	Rp4	2.075	4.1     III
+Rp1	Rp5	-1.355	7.1     III
+Rp1	Rp6	1.607	3.8     III
+Rp1	Rp7	-0.168	1.0     III
+Rp2	Rp3	0.355	4.8     III
+Rp2	Rp5	-1.428	1.9     III
+Rp2	Rp7	-0.227	1.8     III
+Rp3	Rp4	1.691	5.1     III
+Rp3	Rp7	-0.614	2.4     III
+Rp4	Rp6	-0.452	7.2     III
+Rp4	Rp7	-2.239	5.1     III
+Rp5	Rp6	2.915	6.1     III
+Rp5	Rp7	1.169	1.9     III
+
+
