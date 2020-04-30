@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <iomanip>
+#include <cmath>
 #include "Eigen/Dense"
 #include "boost/math/distributions.hpp"
 
@@ -140,64 +141,95 @@ void setMatrixA(MatrixXd& A) {
 	A(0, 12) = 0; A(1, 12) = 0;  A(2, 12) = 0;	A(3, 12) = 0; A(4, 12) = 0;
 }
 
-double setSRT(double& srt, MatrixXd V, MatrixXd P) {
-	srt = sqrt((V.transpose()*P*V)(0,0) / (N-k)); 
-	return srt;
+double setu(double& u, MatrixXd V, MatrixXd P) {
+	int
+		N = 13,
+		k = 2;
+	int r = N - k;
+	u = sqrt((V.transpose()*P*V)(0,0) / r); 
+	return u;
 }
 
-void setMatrixMh(MatrixXd& mh, MatrixXd Qy, double srt) {
+void setMatrixMh(MatrixXd& mh, MatrixXd Qy, double u) {
 	for (size_t i = 0; i < Qy.rows(); i++) 
 	{
 		for (int j = 0; j < Qy.cols(); j++) 
 		{
 			if (i == j)
 			{
-				mh(i, 0) = srt * sqrt(Qy(i, j));
+				mh(i, 0) = u * sqrt(Qy(i, j));
 			}
 		}
 	}	
 }
 
-void setMatrixMH(MatrixXd& mH, MatrixXd Qh, double srt) {
+void setMatrixMH(MatrixXd& mH, MatrixXd Qh, double u) {
 	for (size_t i = 0; i < Qh.rows(); i++)
 	{
-		mH(i, 0) = srt * sqrt(Qh(i, i));
+		mH(i, 0) = u * sqrt(Qh(i, i));
 	}
 }
 
-void getAllValues(double srt, MatrixXd V, MatrixXd mh, MatrixXd mH, MatrixXd P) {
-	cout << "u = " << srt << endl;
-	for (size_t i = 0; i < V.rows(); ++i)
-		cout << "V" + to_string(i + 1) << " = " << V(i, 0) << endl;
+void getAnyVerticalMatrix(MatrixXd matrix, string matrix_name)
+{
+	for (size_t i = 0; i < matrix.rows(); ++i)
+		cout << matrix_name + to_string(i + 1) << " = " << matrix(i, 0) << endl;
 	cout << "----------------------------------------------------------------------------\n";
-	for (size_t i = 0; i < mh.rows(); ++i)
-		cout << "mh" + to_string(i + 1) << " = " << mh(i, 0) << endl;
-	cout << "----------------------------------------------------------------------------\n";
-	for (size_t i = 0; i < mH.rows(); ++i)
-		cout << "mH" + to_string(i + 1) << " = " << mh(i, 0) << endl;
-	cout << "VT*P*V = " << (V.transpose() * P * V)(0,0) << endl;
+}
 
-	cout << "χ21,r,α/2 (a=5%) = " << setX21() << endl;
-	cout << "χ22,r,1-α/2 (a=5%) = " << setX22() << endl;
+void getMatrixS(MatrixXd Qy, MatrixXd V, double u) {
+	for (size_t i = 0; i < Qy.rows(); ++i)
+		cout << fixed << "Sv" + to_string(i + 1) << " = " << abs(V(i, 0)) / (u * sqrt(Qy(i, i))) << endl;
+}
 
-	int N = 13;
-	int r = 2;
+double setXi21(double p){
+	chi_squared Chi(11);//r = количество измерений - количество неизвестных реперов
+	double
+		q = 1 - p,
+		p1 = q / 2.0,
+		xi21 = quantile(Chi, p1);
+	return xi21;
+}
+
+double setXi22(double p) {
+	chi_squared Chi(11);
+	double
+		q = 1 - p,
+		p2 = 1.0 - q / 2.0,
+		xi22 = quantile(Chi, p2);
+	return xi22;
+}
+
+void getXi() {
+	cout << "x21,r,a/2 (a=5%) = " << setXi21(0.95) << endl;
+	cout << "ч22,r,1-a/2 (a=5%) = " << setXi22(0.95) << endl;
+}
+
+double set_t(int r, double p){
+	double pa = pow(p, (1.0 / 13));
+	students_t Stud(r - 1);
+	double t = quantile(Stud, pa);
+	return t;
+}
+
+void getTao() {
+	int r = 11;
 	double p = 0.95;
-	double p_a = pow(p, 1.0 / N);
-	students_t myStud(r - 1);
-	double t = quantile(myStud, p);
-
-	setMatrixS();
-	for (size_t i = 0; i < mH.rows(); ++i)
-		cout << "S" + to_string(i + 1) << " = " << S(i, 0) << endl;
+	double t = set_t(r, p);
+	cout << "tao = " << (t * sqrt(r)) / sqrt(r - 1 + pow(t, 2));
 }
 
-double setChi() {
-	int r = 2;
-	students_t myStud(r - 1);
-	double	Pa;
-	return 0;
+void getAllValues(double u, MatrixXd V, MatrixXd mh, MatrixXd mH, MatrixXd P, MatrixXd Qy) {
+	cout << "u = " << u << endl;
+	getAnyVerticalMatrix(V,"V");
+	getAnyVerticalMatrix(mh,"mh");
+	getAnyVerticalMatrix(mH, "mH");
+	cout << "VT*P*V = " << (V.transpose() * P * V)(0,0) << endl;
+	getXi();
+	getMatrixS(Qy, V, u);
+	getTao();
 }
+
 
 int main()
 {
@@ -237,14 +269,14 @@ int main()
 
 	MatrixXd V = P.inverse() * B.transpose() * K;
 
-	double srt = setSRT(srt, V, P);
+	double u = setu(u, V, P);
 
 	MatrixXd mh(13, 1);
-	setMatrixMh(mh, Qy, srt);
+	setMatrixMh(mh, Qy, u);
 
 	MatrixXd mH(5, 1);
-	setMatrixMH(mh, Qh, srt);	
+	setMatrixMH(mH, Qh, u);	
 
-	getAllValues(srt, V, mh, mH, P);
+	getAllValues(u, V, mh, mH, P, Qy);
 	return 0;
 }
