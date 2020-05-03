@@ -1,20 +1,4 @@
-﻿#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <iomanip>
-#include <cmath>
-#include "Eigen/Dense"
-#include "boost/math/distributions.hpp"
-
-using namespace std;
-using namespace Eigen;
-using namespace boost::math;
-struct  Point
-{
-	string benchmark_name;
-	double height;
-};
+﻿#include "headers.h"
 
 void ImportBenchmarks(vector<Point>& points)
 {
@@ -33,14 +17,7 @@ void ImportBenchmarks(vector<Point>& points)
 
 	}
 }
-struct Meas
-{
-	string from_station;
-	string to_station;
-	double elevation;
-	double distance;
-	string leveling_class;
-};
+
 void ImportMeaseurement(vector<Meas>& sections)
 {
 	ifstream measurements_file("Var02_measurements.txt");
@@ -99,7 +76,8 @@ void setMatrixP(MatrixXd& P, vector<Meas> sections) {
 		{
 			if (i == j)
 			{
-				P(i, j) = pow((1.0 / (10.0 * sqrt(sections[i].distance) / 1000.0)), 2);			}
+				P(i, j) = pow(1.0 / (10.0 * sqrt(sections[i].distance) / 1000.0), 2);
+			}
 			else 
 			{
 				P(i, j) = 0;
@@ -111,10 +89,10 @@ void setMatrixP(MatrixXd& P, vector<Meas> sections) {
 
 //допустимые невязки
 void setMatrixW_h(MatrixXd& W_h, vector<Meas> sections) {
-	W_h(0, 0) = (10.0 / 1000.0) * sqrt(+sections[0].distance + sections[2].distance + sections[9].distance);
+	W_h(0, 0) = (10.0 / 1000.0) * sqrt(sections[0].distance + sections[2].distance + sections[9].distance);
 	W_h(1, 0) = (10.0 / 1000.0) * sqrt(sections[1].distance + sections[11].distance + sections[2].distance);
 	W_h(2, 0) = (10.0 / 1000.0) * sqrt(sections[3].distance + sections[12].distance + sections[1].distance);
-	W_h(3, 0) = (10.0 / 1000.0) * sqrt(+sections[6].distance + sections[5].distance + sections[12].distance);
+	W_h(3, 0) = (10.0 / 1000.0) * sqrt(sections[6].distance + sections[5].distance + sections[12].distance);
 	W_h(4, 0) = (10.0 / 1000.0) * sqrt(sections[0].distance + sections[10].distance + sections[3].distance);
 	W_h(5, 0) = (10.0 / 1000.0) * sqrt(sections[8].distance + sections[10].distance + sections[7].distance);
 	W_h(6, 0) = (10.0 / 1000.0) * sqrt(sections[6].distance + sections[8].distance + sections[4].distance);
@@ -242,7 +220,6 @@ int main()
 
 	vector <Meas> sections;
 	ImportMeaseurement(sections);
-	vector<double> W_;
 
 	MatrixXd W(7, 1);
 	GetResiduals(sections, W);
