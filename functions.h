@@ -21,6 +21,7 @@ void setMatrixMh(MatrixXd&, MatrixXd, double);
 
 void setMatrixMH(MatrixXd&, MatrixXd, double);
 
+//Ниже функции для getAllValues
 void getAnyVerticalMatrix(MatrixXd, string);
 
 void getMatrixS(MatrixXd, MatrixXd, double);
