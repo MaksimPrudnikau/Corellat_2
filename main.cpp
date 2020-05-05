@@ -1,10 +1,10 @@
 ﻿#include "headers.h"
+#include "functions.h"
 
 int main()
 {
 	setlocale(LC_CTYPE, "RUS");
 	cout.precision(8);
-
 
 	vector <Point> points;
 	ImportBenchmarks(points);
