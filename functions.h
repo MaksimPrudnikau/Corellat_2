@@ -5,7 +5,7 @@ void ImportBenchmarks(vector<Point>&);
 
 void ImportMeaseurement(vector<Meas>&);
 
-MatrixXd GetResiduals(vector <Meas>&, MatrixXd&);
+MatrixXd GetResiduals(vector <Meas>&, vector<Point>&,  MatrixXd&);
 
 void setMatrixB(MatrixXd&);
 
@@ -24,7 +24,9 @@ void setMatrixMH(MatrixXd&, MatrixXd, double);
 //Ниже функции для getAllValues
 void getAnyVerticalMatrix(MatrixXd, string);
 
-void getMatrixS(MatrixXd, MatrixXd, double);
+MatrixXd setMatrixQv(MatrixXd, MatrixXd);
+
+MatrixXd setMatrixSv(MatrixXd, double, MatrixXd);
 
 double setXi21(double);
 
@@ -34,6 +36,6 @@ void getXi();
 
 double set_t(int, double);
 
-void getTao();
+void getTao(double);
 
 void getAllValues(double, MatrixXd, MatrixXd, MatrixXd, MatrixXd, MatrixXd);

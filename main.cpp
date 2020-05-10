@@ -12,10 +12,10 @@ int main()
 	vector <Meas> sections;
 	ImportMeaseurement(sections);
 
-	MatrixXd W(7, 1);
-	GetResiduals(sections, W);
+	MatrixXd W(8, 1);
+	GetResiduals(sections,points, W);
 
-	MatrixXd B(7, 13);
+	MatrixXd B(8, 13);
 	setMatrixB(B);
 
 	MatrixXd P(13, 13);
