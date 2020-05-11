@@ -36,6 +36,6 @@ void getXi();
 
 double set_t(int, double);
 
-void getTao(double);
+void getTao();
 
 void getAllValues(double, MatrixXd, MatrixXd, MatrixXd, MatrixXd, MatrixXd);

@@ -160,7 +160,7 @@ MatrixXd setMatrixSv(MatrixXd V, double u, MatrixXd Qv) {
 	MatrixXd Sv(13, 1);
 	for (size_t i = 0; i < V.rows(); ++i)
 		Sv(i, 0) = abs(V(i, 0)) / (u * sqrt(Qv(i, i)));
-	return Sv
+	return Sv;
 }
 
 double setXi21(double p) {
@@ -182,22 +182,27 @@ double setXi22(double p) {
 }
 
 void getXi() {
-	cout << "x21,r,a/2 (a=5%) = " << setXi21(0.95) << endl;
-	cout << "÷22,r,1-a/2 (a=5%) = " << setXi22(0.95) << endl;
+	cout << "x21,r,a/2 (a=5%) = " << fixed << setXi21(0.95) << endl;
+	cout << "x22,r,1-a/2 (a=5%) = " << fixed << setXi22(0.95) << endl;
 }
 
 double set_t(int r, double p) {
 	double pa = pow(p, (1.0 / 13));
-	students_t Stud(r--);
+	students_t Stud(--r);
 	double t = quantile(Stud, pa);
 	return t;
 }
 
-void getTao(double pa) {
+void getTao() {
 	int r = 8;
 	double p = 0.95;
 	double t = set_t(r, p);
-	cout << "tao = " << (t * sqrt(r)) / sqrt(r-- + pow(t, 2));
+
+
+
+	double a = t * sqrt(r);
+	double b = sqrt(r - 1 + t * t);
+	cout << "tao = " << t * sqrt(r) / sqrt(r - 1 + t * t);
 }
 
 void getAllValues(double u, MatrixXd V, MatrixXd mh, MatrixXd mH, MatrixXd P, MatrixXd Qy) {
@@ -209,6 +214,5 @@ void getAllValues(double u, MatrixXd V, MatrixXd mh, MatrixXd mH, MatrixXd P, Ma
 	getXi();
 	MatrixXd Qv = setMatrixQv(P, Qy);
 	getAnyVerticalMatrix(setMatrixSv(V, u, Qv), "Sv");
-	double pa = pow(0.95, (1.0 / 13));
-	getTao(pa);
+	getTao();
 }
